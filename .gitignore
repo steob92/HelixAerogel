@@ -1,3 +1,4 @@
 # Excluding compiled code #
 ###########################
 *.o
+*~
