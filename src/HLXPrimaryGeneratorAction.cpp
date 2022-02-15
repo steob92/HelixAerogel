@@ -37,6 +37,16 @@ HLXPrimaryGeneratorAction::HLXPrimaryGeneratorAction()
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
   // Defining a mono-energtic beam
   fParticleGun->SetParticleEnergy(35.*MeV);
+
+  // Turing on beam divergence
+  #ifdef DIVERGENCE
+    fDivergence = true;
+  #endif
+  // Setting Gaussian beam profile
+  #ifdef GAUSSIAN
+    fBeamType = "gaussian";
+  #endif
+  
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
