@@ -22,10 +22,12 @@ find_package(ROOT REQUIRED)
 include_directories(${ROOT_INCLUDE_DIR})
 
 # Define what physics to use
-# add_definitions(-DALL_PHYSICS)
+add_definitions(-DALL_PHYSICS)
 # Define putting glass plane infront of CCD
 # add_definitions(-DREAL_CCD)
 
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 #----------------------------------------------------------------------------
 # Setup Geant4 include directories and compile definitions
@@ -44,10 +46,10 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(HLX HLX.cc ${sources} ${headers})
+add_executable(HLX ${PROJECT_SOURCE_DIR}/src/HLX.cc ${sources} ${headers})
 target_link_libraries(HLX ${Geant4_LIBRARIES} ROOT::Core)
 
-add_executable(analyzeRuns analyzeRuns.cpp )
+add_executable(analyzeRuns ${PROJECT_SOURCE_DIR}/src/analyzeRuns.cc )
 target_link_libraries(analyzeRuns ${ROOT_LIBRARIES} ROOT::Core)
 
 #----------------------------------------------------------------------------
