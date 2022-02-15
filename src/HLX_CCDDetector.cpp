@@ -17,37 +17,13 @@ HLX_CCDDetector::HLX_CCDDetector(const G4String &name)
     fE = 0;
 
 
-    // G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-
-    // analysisManager->OpenFile("fDectName");
-
-    // // Photon Data Tree
-    // fPhotID = analysisManager->CreateNtuple("Photon", "Photon Quantities");
-    // // X = D in CreateNtupleXColumn stands for G4double (I,F,D,S)
-    // analysisManager->CreateNtupleFColumn("ID");             // Event ID
-    // analysisManager->CreateNtupleFColumn("X");              // X-loc
-    // analysisManager->CreateNtupleFColumn("Y");              // Y-loc
-    // analysisManager->CreateNtupleFColumn("E");              // Energy
-    // analysisManager->FinishNtuple(fPhotID);
-
-
-    // fEleID = analysisManager->CreateNtuple("Electron", "Electron Quantities");
-    // // X = D in CreateNtupleXColumn stands for G4double (I,F,D,S)
-    // analysisManager->CreateNtupleFColumn("ID");             // Event ID
-    // analysisManager->CreateNtupleFColumn("X");              // X-loc
-    // analysisManager->CreateNtupleFColumn("Y");              // Y-loc
-    // analysisManager->CreateNtupleFColumn("E");              // Energy
-    // analysisManager->FinishNtuple(fEleID);
 
 }
 
 // Destructor
 HLX_CCDDetector::~HLX_CCDDetector()
 {
-  // Get analysis manager
-//   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-//   analysisManager->Write();
-//   analysisManager->CloseFile(); 
+
 }
 
 // Methods
@@ -80,9 +56,6 @@ G4bool HLX_CCDDetector::ProcessHits(G4Step* step, __attribute__((unused)) G4Touc
         fX = pos.x();
         fY = pos.y();
 
-        // G4cout << "\n\n##########################\n\n";
-        // G4cout << ParticleName << " Detected!" << G4endl;
-        // G4cout << "\n\n##########################\n\n";
 
         if (ParticleName == "opticalphoton") 
         {
@@ -90,11 +63,6 @@ G4bool HLX_CCDDetector::ProcessHits(G4Step* step, __attribute__((unused)) G4Touc
             fCCounter+=1;
             // fE = depEnergy/CLHEP::eV;
             fE = track->GetKineticEnergy()/CLHEP::eV;
-            // G4cout << "(" << fEventNum << " , " << fCCounter << ") optical photon detected at: "
-            //        << "X: " << fX << " , "
-            //        << "Y: " << fY << " , "
-            //        << "Energy: " << fE 
-            //        << G4endl;
             iTupID = 0;
 
         }
@@ -103,12 +71,6 @@ G4bool HLX_CCDDetector::ProcessHits(G4Step* step, __attribute__((unused)) G4Touc
 
             fE = track->GetKineticEnergy()/CLHEP::MeV;
             iTupID = 1;
-
-            // G4cout << "(" << fEventNum << ") Electron detected at: "
-            //        << "X: " << fX << " , "
-            //        << "Y: " << fY << " , "
-            //        << "Energy: " << fE 
-            //        << G4endl;
         }
         else 
         {

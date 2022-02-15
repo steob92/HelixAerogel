@@ -56,13 +56,6 @@ private:
     G4int fEleID;
 
 
-    // for saving to ROOT file
-    // TFile *fFile;
-
-    // OutTrees
-    // TTree *fPhotTree;
-    // TTree *fETree;
-
     // Particle details
     G4double fX;                // Particle's x-location
     G4double fY;                // Particle's y-location

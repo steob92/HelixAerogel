@@ -17,12 +17,14 @@ HLXPrimaryGeneratorAction::HLXPrimaryGeneratorAction()
   fParticleGun(0), 
   fEnvelopeBox(0),
   fUniform(false),
-  fDivergence(true),
-  fBeamType("gaussian"),
+  fDivergence(false),
+  fBeamType("pencil"),
   fsigmaBeamX(0* mm / (2 * std::sqrt(2 * std::log(2)))), // Converting FWHM to Gaussian width
   fsigmaBeamY(0* mm / (2 * std::sqrt(2 * std::log(2)))), // Converting FWHM to Gaussian width
   fThetaDiv(1.00 * CLHEP::pi / 180.)  // default to 0.25 degrees
 {
+
+  CLHEP::HepRandom::setTheSeed((unsigned)clock());
   G4int n_particle = 1;
   fParticleGun  = new G4ParticleGun(n_particle);
 
@@ -33,8 +35,8 @@ HLXPrimaryGeneratorAction::HLXPrimaryGeneratorAction()
     = particleTable->FindParticle(particleName="e-");
   fParticleGun->SetParticleDefinition(particle);
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
+  // Defining a mono-energtic beam
   fParticleGun->SetParticleEnergy(35.*MeV);
-  CLHEP::HepRandom::setTheSeed((unsigned)clock());
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -67,10 +69,10 @@ void HLXPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4double phi = 0;
   fThetaDiv = 2.0 * CLHEP::pi / 180.;
 
-  // Beam Geometry
+
+
+  // Define a uniform beam of 5mm width
   G4double width = 5 * mm;
-
-
   if (fBeamType == "uniform")
   {
     // Uniform beam profile

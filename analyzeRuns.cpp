@@ -16,11 +16,14 @@
 using namespace std;
 
 
+// Calculate the relativistic velocity of particle
+// Assumes energy in MeV
 double getBeta(double E)
 {
     return TMath::Sqrt(1. - TMath::Power(( 0.511 / E ), 2.) );
 }
 
+// Get the cherenkov angle
 double getTheta(double n, double E)
 {
     double beta = getBeta(E);
@@ -28,14 +31,18 @@ double getTheta(double n, double E)
 }
 
 
+// 3rd order parabola
 double parabola(Double_t *x, Double_t *par)
 {
+    // p0 * x^3 + p1 * x^2 + p2 * x + p3
     return par[0] * x[0] * x[0] * x[0] + par[1] * x[0] * x[0] + par[2] * x[0] + par[3];
 }
 
+
+// Get the maximum of the parabola
+// Hastily converted from python...
 void getParMaxErr(vector <double> &max, vector <double> &max_err, double *par, double *par_err)
 {
-
 
     // d/dx of 3rd order poly can be expressed as the 2nd order
     double a = 3*par[0];
@@ -52,6 +59,7 @@ void getParMaxErr(vector <double> &max, vector <double> &max_err, double *par, d
     double inner = TMath::Power(b,2) - 4*a*c;
 
     // Since we have 2 roots...
+    // Clear and reset to zero
     max.clear();
     max.assign(2,0);
     max_err.clear();
@@ -60,6 +68,7 @@ void getParMaxErr(vector <double> &max, vector <double> &max_err, double *par, d
     double dfdb[2] = {0,0};
     double dfdc[2] = {0,0};
 
+    // eqn 1 - [-b +/- sqrt(b^2 - 4ac)] / 2a
     max[0] = (-b + TMath::Sqrt(inner)) / 2 / a;
     max[1] = (-b - TMath::Sqrt(inner)) / 2 / a;
 
@@ -74,7 +83,7 @@ void getParMaxErr(vector <double> &max, vector <double> &max_err, double *par, d
     v[0] = 1./(2.*a);
     v[1] = 1./(2.*a);
 
-    // We than calculate the error on the roots
+    // We then calculate the error on the roots
     // by calculating the dervites of u and v
     double duda[2] = {0,0};
     double dudb[2] = {0,0};
@@ -126,6 +135,8 @@ void getParMaxErr(vector <double> &max, vector <double> &max_err, double *par, d
 
 }
 
+
+// Get the radius for a given refractive index and energy
 double getRadius(double n, double E)
 {
     double thetac = getTheta(n,E);
@@ -143,6 +154,7 @@ double getRadius(double n, double E)
 }
 
 
+// Wrapping this in a function a little friendlier for TF1
 double wrap_getRadius(Double_t *x, Double_t *par)
 {
     return getRadius(par[0], x[0]);
@@ -170,24 +182,26 @@ void processRun(TTree *data, double &mean, double &std, double &mean_err, double
     std_err = fGaus->GetParError(2);
 
     double window = 3;
-    // TF1 *fPar = new TF1("fPar", parabola, mean -window,mean +window, 4);
-    // fH1->Fit("fPar", "LER");
 
-    // vector <double> fmax(2);
-    // vector <double> fmax_err(2);
-    // // void getParMaxErr(vector <double> &max, vector <double> &max_err, double *par, double *par_err)
+    // Fit parabola to data
+    TF1 *fPar = new TF1("fPar", parabola, mean -window,mean +window, 4);
+    fH1->Fit("fPar", "LER");
 
-    // getParMaxErr(fmax, fmax_err, (double*)fPar->GetParameters(), (double*)fPar->GetParErrors());
+    vector <double> fmax(2);
+    vector <double> fmax_err(2);
+    // void getParMaxErr(vector <double> &max, vector <double> &max_err, double *par, double *par_err)
 
-    // // Select the correct root
-    // int iret = 0;
-    // if ( fmax[0] < 190 || fmax[0] > 210 ) {iret = 1;}
-    // par = fmax[iret];
-    // par_err = fmax_err[iret];
+    getParMaxErr(fmax, fmax_err, (double*)fPar->GetParameters(), (double*)fPar->GetParErrors());
 
-    TCanvas *c1 = new TCanvas();
-    fH1->Draw();
-    c1->Print("Test.png");
+    // Select the correct root
+    int iret = 0;
+    if ( fmax[0] < 190 || fmax[0] > 210 ) {iret = 1;}
+    par = fmax[iret];
+    par_err = fmax_err[iret];
+
+    // TCanvas *c1 = new TCanvas();
+    // fH1->Draw();
+    // c1->Print("Test.png");
 
 
     delete c1, fH1;
@@ -199,7 +213,7 @@ int main(int argc, char *argv[])
 {
 
     unsigned int i = 0;
-
+    // Define data vectors for later
     vector <string> filename(argc-1);
     vector <double> energy(argc-1);
     vector <double> mean(argc-1);
@@ -211,7 +225,7 @@ int main(int argc, char *argv[])
 
     vector <double> radius(argc-1);
 
-
+    // Assumed spectral index
     double n = 1.15;
 
     for (i = 0; i < argc-1 ; i++)
@@ -244,6 +258,7 @@ int main(int argc, char *argv[])
     // gPara->SetLineColor(kBlack);
     // gPara->Fit("fRadius");
 
+    // Plot the cherenkov ring radius as a function of energy
     TCanvas *c1 = new TCanvas();
     gMean->SetTitle("Cherenkov Ring Radius;Energy [MeV];Radius [mm]");
     gMean->Draw("AP");
