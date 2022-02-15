@@ -57,14 +57,26 @@ target_link_libraries(analyzeRuns ${ROOT_LIBRARIES} ROOT::Core)
 # build HLXAERO. This is so that we can run the executable directly because it
 # relies on these scripts being in the current working directory.
 #
-set(HLX_SCRIPTS
+set(HLX_MACROS
   init_vis.mac
   init.mac
   nrc.mac
   vis.mac
   nrc_batch.mac
-  batchRunSim.sh
   )
+
+set(HLX_SCRIPTS
+  batchRunSim.sh
+)
+
+foreach(_script ${HLX_MACROS})
+  configure_file(
+    ${PROJECT_SOURCE_DIR}/macros/${_script}
+    ${PROJECT_BINARY_DIR}/macros/${_script}
+    COPYONLY
+    )
+endforeach()
+
 
 foreach(_script ${HLX_SCRIPTS})
   configure_file(
