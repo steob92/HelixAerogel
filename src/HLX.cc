@@ -40,14 +40,15 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(new HLXDetectorConstruction());
 
   // Physics list
-  G4VModularPhysicsList* physicsList = new QBBC;
-  physicsList->SetVerboseLevel(1);
+  // G4VModularPhysicsList* physicsList = new QBBC;
+  // physicsList->SetVerboseLevel(1);
   // G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
   // physicsList->RegisterPhysics(opticalPhysics);
 
 
 
   // runManager->SetUserInitialization(physicsList);
+  // Run user defined physics list
   runManager->SetUserInitialization(new PhysicsList);
 
     
@@ -64,7 +65,8 @@ int main(int argc,char** argv)
   // Get the pointer to the User Interface manager
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
-  // Process macro or start UI session
+  // Process macro or start UI session  // G4VModularPhysicsList* physicsList = new QBBC;
+  // physicsList->SetVerboseLevel(1);
   //
   if ( ! ui ) { 
     // batch mode
@@ -75,6 +77,7 @@ int main(int argc,char** argv)
   }
   else { 
     // interactive mode
+    // UImanager->ApplyCommand("/control/macroPath ../macros/");
     UImanager->ApplyCommand("/control/execute macros/init_vis.mac");
     ui->SessionStart();
     delete ui;
