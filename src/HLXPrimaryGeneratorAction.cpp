@@ -19,6 +19,7 @@ HLXPrimaryGeneratorAction::HLXPrimaryGeneratorAction()
   fUniform(false),
   fDivergence(false),
   fBeamType("pencil"),
+  fBeamEnergy(false),
   //  <2mm C. K. Ross et. al (2008) 
   fsigmaBeamX(2.* mm / (2 * std::sqrt(2 * std::log(2)))), // Converting FWHM to Gaussian width
   fsigmaBeamY(2.* mm / (2 * std::sqrt(2 * std::log(2)))), // Converting FWHM to Gaussian width
@@ -47,7 +48,9 @@ HLXPrimaryGeneratorAction::HLXPrimaryGeneratorAction()
   #ifdef GAUSSIAN
     fBeamType = "gaussian";
   #endif
-  
+  #ifdef VARENERGY
+    fBeamEnergy = true; 
+  #endif
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -115,12 +118,20 @@ void HLXPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     // theta = 0.5 * fThetaDiv * G4UniformRand(); // 0 - half Divergence
     phi = 0.5 * fThetaDiv * G4UniformRand(); // 0 - half Divergence
 
+    // Spherical to Cartesian coordinates
     px0 = std::sin(phi) * std::cos(theta);
     py0 = std::sin(phi) * std::sin(theta);
     pz0 = std::cos(phi);
   }
 
 
+
+  if (fBeamEnergy)
+  {
+    G4double eng = fParticleGun->GetParticleEnergy();
+    // 0.4% uncertinaty on beam energy
+    fParticleGun->SetParticleEnergy(G4RandGauss::shoot( eng, 0.004*eng));
+  }
 
   fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(px0, py0, pz0));

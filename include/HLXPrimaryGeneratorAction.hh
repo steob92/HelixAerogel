@@ -27,6 +27,7 @@ class HLXPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
     G4bool fUniform;
     G4bool fDivergence;
+    G4bool fBeamEnergy;
     G4double fThetaDiv;
     G4String fBeamType;
     G4double fsigmaBeamX;

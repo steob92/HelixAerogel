@@ -22,13 +22,13 @@ find_package(ROOT REQUIRED)
 include_directories(${ROOT_INCLUDE_DIR})
 
 # Define what physics to use
-# add_definitions(-DALL_PHYSICS)
+add_definitions(-DALL_PHYSICS)
 # Define putting glass plane infront of CCD
 # add_definitions(-DREAL_CCD)
 # Some definitions for quick turing on/off of components
 #add_definitions(-DDIVERGENCE)       # Beam divergence
 add_definitions(-DGAUSSIAN)         # Gaussian beam profile 
-
+#add_definitions(-DVARENERGY)        # Variable beam energy
 
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
