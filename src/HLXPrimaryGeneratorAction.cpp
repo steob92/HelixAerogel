@@ -111,7 +111,7 @@ void HLXPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     // Uniformally distributed theta and pi
     // phi is the half opening angle of the beam divergence
     // Theta is the angle in the x-y plane
-    theta = CLHEP::pi * G4UniformRand() - CLHEP::pi / 2. ; // 0-180 degrees
+    theta = 2*CLHEP::pi * G4UniformRand() ; // 0-360 degrees
     // theta = 0.5 * fThetaDiv * G4UniformRand(); // 0 - half Divergence
     phi = 0.5 * fThetaDiv * G4UniformRand(); // 0 - half Divergence
 
