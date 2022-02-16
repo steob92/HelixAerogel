@@ -19,8 +19,9 @@ HLXPrimaryGeneratorAction::HLXPrimaryGeneratorAction()
   fUniform(false),
   fDivergence(false),
   fBeamType("pencil"),
-  fsigmaBeamX(0* mm / (2 * std::sqrt(2 * std::log(2)))), // Converting FWHM to Gaussian width
-  fsigmaBeamY(0* mm / (2 * std::sqrt(2 * std::log(2)))), // Converting FWHM to Gaussian width
+  //  <2mm C. K. Ross et. al (2008) 
+  fsigmaBeamX(2.* mm / (2 * std::sqrt(2 * std::log(2)))), // Converting FWHM to Gaussian width
+  fsigmaBeamY(2.* mm / (2 * std::sqrt(2 * std::log(2)))), // Converting FWHM to Gaussian width
   fThetaDiv(1.00 * CLHEP::pi / 180.)  // default to 0.25 degrees
 {
 
@@ -109,13 +110,14 @@ void HLXPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   {
     // Uniformally distributed theta and pi
     // phi is the half opening angle of the beam divergence
-    // theta = CLHEP::pi * G4UniformRand() - CLHEP::pi / 2. ; // 0-180 degrees
-    theta = 0.5 * fThetaDiv * G4UniformRand(); // 0 - half Divergence
+    // Theta is the angle in the x-y plane
+    theta = CLHEP::pi * G4UniformRand() - CLHEP::pi / 2. ; // 0-180 degrees
+    // theta = 0.5 * fThetaDiv * G4UniformRand(); // 0 - half Divergence
     phi = 0.5 * fThetaDiv * G4UniformRand(); // 0 - half Divergence
 
-    px0=std::sin(theta)*std::cos(phi);
-    py0=std::sin(theta)*std::sin(phi);
-    pz0=std::cos(theta);
+    px0 = std::sin(phi) * std::cos(theta);
+    py0 = std::sin(phi) * std::sin(theta);
+    pz0 = std::cos(phi);
   }
 
 
