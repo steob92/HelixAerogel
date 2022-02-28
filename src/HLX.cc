@@ -63,7 +63,7 @@ int main(int argc,char** argv)
   visManager->Initialize();
 
   // Get the pointer to the User Interface manager
-  G4UImanager* UImanager = G4UImanager::GetUIpointer();
+  G4UImanager* UIManager = G4UImanager::GetUIpointer();
 
   // Process macro or start UI session  // G4VModularPhysicsList* physicsList = new QBBC;
   // physicsList->SetVerboseLevel(1);
@@ -72,13 +72,13 @@ int main(int argc,char** argv)
     // batch mode
     G4String command = "/control/execute ";
     G4String fileName = argv[1];
-    // UImanager->ApplyCommand("/control/execute init.mac");
-    UImanager->ApplyCommand(command+fileName);
+    // UIManager->ApplyCommand("/control/execute init.mac");
+    UIManager->ApplyCommand(command+fileName);
   }
   else { 
     // interactive mode
-    // UImanager->ApplyCommand("/control/macroPath ../macros/");
-    UImanager->ApplyCommand("/control/execute macros/init_vis.mac");
+    // UIManager->ApplyCommand("/control/macroPath ../macros/");
+    UIManager->ApplyCommand("/control/execute macros/init_vis.mac");
     ui->SessionStart();
     delete ui;
   }

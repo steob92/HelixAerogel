@@ -48,6 +48,7 @@ HLXPrimaryGeneratorAction::HLXPrimaryGeneratorAction()
   #ifdef GAUSSIAN
     fBeamType = "gaussian";
   #endif
+  // Variable energy
   #ifdef VARENERGY
     fBeamEnergy = true; 
   #endif

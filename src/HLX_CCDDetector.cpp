@@ -48,7 +48,7 @@ G4bool HLX_CCDDetector::ProcessHits(G4Step* step, __attribute__((unused)) G4Touc
 
         G4Track* track = step->GetTrack();
         G4ThreeVector pos = track->GetPosition();
-        G4String ParticleName = track->GetDynamicParticle()->GetParticleDefinition()->GetParticleName();
+        G4String particleName = track->GetDynamicParticle()->GetParticleDefinition()->GetParticleName();
 
         fEventNum = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
 
@@ -57,7 +57,7 @@ G4bool HLX_CCDDetector::ProcessHits(G4Step* step, __attribute__((unused)) G4Touc
         fY = pos.y();
 
 
-        if (ParticleName == "opticalphoton") 
+        if (particleName == "opticalphoton") 
         {
             G4double depEnergy = step->GetTotalEnergyDeposit();
             fCCounter+=1;
@@ -66,7 +66,7 @@ G4bool HLX_CCDDetector::ProcessHits(G4Step* step, __attribute__((unused)) G4Touc
             iTupID = 0;
 
         }
-        else if (ParticleName == "e-") 
+        else if (particleName == "e-") 
         {
 
             fE = track->GetKineticEnergy()/CLHEP::MeV;

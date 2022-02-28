@@ -92,22 +92,22 @@ void PhysicsList::ConstructOp() {
     while( (*GetParticleIterator())() ) 
     {
         G4ParticleDefinition* particle = GetParticleIterator()->value();
-        G4ProcessManager* pmanager = particle->GetProcessManager();
+        G4ProcessManager* pManager = particle->GetProcessManager();
         G4String particleName = particle->GetParticleName();
 
         if (cerenkovProcess->IsApplicable(*particle) || particleName == "GenericIon") 
         {
-            pmanager->AddProcess(cerenkovProcess);
-            pmanager->SetProcessOrdering(cerenkovProcess, idxPostStep);
+            pManager->AddProcess(cerenkovProcess);
+            pManager->SetProcessOrdering(cerenkovProcess, idxPostStep);
         }
         if (particleName == "opticalphoton") 
         {
-            pmanager->AddDiscreteProcess(boundaryProcess);
+            pManager->AddDiscreteProcess(boundaryProcess);
             #ifdef ALL_PHYSICS
-                pmanager->AddDiscreteProcess(absProcess);
-                pmanager->AddDiscreteProcess(rayProcess);
-                pmanager->AddProcess(new G4ComptonScattering());
-                pmanager->AddProcess(new G4hMultipleScattering());
+                pManager->AddDiscreteProcess(absProcess);
+                pManager->AddDiscreteProcess(rayProcess);
+                pManager->AddProcess(new G4ComptonScattering());
+                pManager->AddProcess(new G4hMultipleScattering());
             #endif
         }
     }
@@ -120,7 +120,7 @@ void PhysicsList::ConstructEM() {
     while( (*GetParticleIterator())() )
     {
         G4ParticleDefinition* particle = GetParticleIterator()->value();
-        G4ProcessManager* pmanager = particle->GetProcessManager();
+        G4ProcessManager* pManager = particle->GetProcessManager();
         G4String particleName = particle->GetParticleName();
 
         if (particleName == "gamma") 
@@ -128,9 +128,9 @@ void PhysicsList::ConstructEM() {
             // gamma
             // Construct processes for gamma
             #ifdef ALL_PHYSICS
-                pmanager->AddDiscreteProcess(new G4GammaConversion());
-                pmanager->AddDiscreteProcess(new G4ComptonScattering());
-                pmanager->AddDiscreteProcess(new G4PhotoElectricEffect());
+                pManager->AddDiscreteProcess(new G4GammaConversion());
+                pManager->AddDiscreteProcess(new G4ComptonScattering());
+                pManager->AddDiscreteProcess(new G4PhotoElectricEffect());
             #endif
 
         } 
@@ -140,9 +140,9 @@ void PhysicsList::ConstructEM() {
             //electron
             // Construct processes for electron
             #ifdef ALL_PHYSICS
-                pmanager->AddProcess(new G4eMultipleScattering(),-1, 1, 1);
-                pmanager->AddProcess(new G4eIonisation(),       -1, 2, 2);
-                pmanager->AddProcess(new G4eBremsstrahlung(),   -1, -1, 3);
+                pManager->AddProcess(new G4eMultipleScattering(),-1, 1, 1);
+                pManager->AddProcess(new G4eIonisation(),       -1, 2, 2);
+                pManager->AddProcess(new G4eBremsstrahlung(),   -1, -1, 3);
             #endif
         } 
         
@@ -150,10 +150,10 @@ void PhysicsList::ConstructEM() {
         {
             // Construct processes for positron
             #ifdef ALL_PHYSICS
-                pmanager->AddProcess(new G4eMultipleScattering(),-1, 1, 1);
-                pmanager->AddProcess(new G4eIonisation(),       -1, 2, 2);
-                pmanager->AddProcess(new G4eBremsstrahlung(),   -1, -1, 3);
-                //pmanager->AddProcess(new G4eplusAnnihilation(),   0, -1, 4);
+                pManager->AddProcess(new G4eMultipleScattering(),-1, 1, 1);
+                pManager->AddProcess(new G4eIonisation(),       -1, 2, 2);
+                pManager->AddProcess(new G4eBremsstrahlung(),   -1, -1, 3);
+                //pManager->AddProcess(new G4eplusAnnihilation(),   0, -1, 4);
             #endif
 
         } 
@@ -162,21 +162,21 @@ void PhysicsList::ConstructEM() {
         {
             // Construct processes for proton/anti-proton
             #ifdef ALL_PHYSICS
-                pmanager->AddProcess(new G4hMultipleScattering(),-1, 1, 1);
-                pmanager->AddProcess(new G4hIonisation(),       -1, 2, 2);
+                pManager->AddProcess(new G4hMultipleScattering(),-1, 1, 1);
+                pManager->AddProcess(new G4hIonisation(),       -1, 2, 2);
             #endif
         }
 
         else if ( (particleName == "alpha") && particle->GetPDGCharge() != 0.0 )
         {
             #ifdef ALL_PHYSICS
-                pmanager->AddProcess(new G4ionIonisation(), -1, 2, 2);
-                pmanager->AddProcess(new G4hMultipleScattering(),-1, 1, 1);
+                pManager->AddProcess(new G4ionIonisation(), -1, 2, 2);
+                pManager->AddProcess(new G4hMultipleScattering(),-1, 1, 1);
             #endif
         }
         else if ( (particleName == "GenericIon") &&particle->GetPDGCharge() != 0.0) 
         {
-            pmanager->AddProcess(new G4ionIonisation(), -1, 2, 2);
+            pManager->AddProcess(new G4ionIonisation(), -1, 2, 2);
         }
 
         else 
@@ -185,8 +185,8 @@ void PhysicsList::ConstructEM() {
             {
                 // all others charged particles except geantino
                 #ifdef ALL_PHYSICS
-                    pmanager->AddProcess(new G4hMultipleScattering(),-1,1,1);
-                    pmanager->AddProcess(new G4hIonisation(),       -1,2,2);
+                    pManager->AddProcess(new G4hMultipleScattering(),-1,1,1);
+                    pManager->AddProcess(new G4hIonisation(),       -1,2,2);
                 #endif 
             }
         }

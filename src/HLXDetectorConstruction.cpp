@@ -43,9 +43,9 @@ G4VPhysicalVolume* HLXDetectorConstruction::Construct()
     //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
     // Define upper and lower range of optical photons
     // Properties later on will be defined over this range
-    G4double iso_minWL = 400;
-    G4double iso_maxWL = 700;
-    G4double energyRange[] = {1239.84193*eV/iso_maxWL, 1239.84193*eV/iso_minWL};
+    G4double isoMinWL = 400;
+    G4double isoMaxWL = 700;
+    G4double energyRange[] = {1239.84193*eV/isoMaxWL, 1239.84193*eV/isoMinWL};
 
     
     //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -57,72 +57,92 @@ G4VPhysicalVolume* HLXDetectorConstruction::Construct()
     G4double temperature = 2.73*kelvin;
     G4double pressure = 3.e-18*pascal;
     
-    G4Material* vacuum_mat =
+    G4Material* vacuumMaterial =
         new G4Material("interGalactic", atomicNumber,
         massOfMole, density, kStateGas,
         temperature, pressure);
 
     // create refractive index for vacuum
-    G4MaterialPropertiesTable *vacuum_MPT = new G4MaterialPropertiesTable();
-    G4double vacuum_n[] = {1.00, 1.00};
-    vacuum_MPT->AddProperty("RINDEX", energyRange, vacuum_n, 2);
-    vacuum_mat->SetMaterialPropertiesTable(vacuum_MPT);
+    G4MaterialPropertiesTable *vacuumMPT = new G4MaterialPropertiesTable();
+    G4double vacuumN[] = {1.00, 1.00};
+    vacuumMPT->AddProperty("RINDEX", energyRange, vacuumN, 2);
+    vacuumMaterial->SetMaterialPropertiesTable(vacuumMPT);
 
     
     // Define air and set the refractive index
-    G4Material* air_mat = nist->FindOrBuildMaterial("G4_AIR");
-    G4MaterialPropertiesTable *air_MPT = new G4MaterialPropertiesTable();
+    G4Material* airMaterial = nist->FindOrBuildMaterial("G4_AIR");
+    G4MaterialPropertiesTable *airMPT = new G4MaterialPropertiesTable();
     G4double air_n[] = {1.0003, 1.0003};
-    air_MPT->AddProperty("RINDEX", energyRange, air_n, 2);
-    air_mat->SetMaterialPropertiesTable(air_MPT);
+    airMPT->AddProperty("RINDEX", energyRange, air_n, 2);
+    airMaterial->SetMaterialPropertiesTable(airMPT);
 
 
-    G4Element* el_H  = new G4Element("Hydrogen", "H", 1., 1.01*g/mole);
-    G4Element* el_O  = new G4Element("Oxygen", "O", 8., 16.00*g/mole);
-    G4Element* el_Si  = new G4Element("Silicon", "Si", 14., 28.1*g/mole);
+    G4Element* elH  = new G4Element("Hydrogen", "H", 1., 1.01*g/mole);
+    G4Element* elO  = new G4Element("Oxygen", "O", 8., 16.00*g/mole);
+    G4Element* elSi  = new G4Element("Silicon", "Si", 14., 28.1*g/mole);
 
     // Define Aerogel
     G4int nComponent = 3;
     // "Non interacting aerogel"
     // This is effectively a vacuum the refractive index of aerogel
-    G4Material *aerogel_mat = new G4Material("Aerogel", 1.e-25*g/cm3, nComponent,
-                                            kStateGas, 0.1*kelvin,  1.e-19*pascal);
+    // G4Material *aerogelMaterial = new G4Material("Aerogel", 1.e-25*g/cm3, nComponent,
+    //                                         kStateGas, 0.1*kelvin,  1.e-19*pascal);
 
-    //G4Material *aerogel_mat = new G4Material("Aerogel",  1.0,  1.e-8*g/mole,  1.e-25*g/cm3,
+    //G4Material *aerogelMaterial = new G4Material("Aerogel",  1.0,  1.e-8*g/mole,  1.e-25*g/cm3,
     // 				      kStateGas, 0.1*kelvin,  1.e-19*pascal);
-    // Room temperate, sea level preasure
-    // Reaslistic Aerogel
-    // G4Material *Aerogel = new G4Material("Aerogel", 0.53*g/cm3, nComponent);
-    //                                 //    kStateGas, 293.*kelvin,  101325.*pascal);
 
-    // //See Buzykaev et al NIM A433 (1999) 396
+
+    //See Tabata et al 2019 https://arxiv.org/abs/1901.06663
+    // Reaslistic Aerogel
+    // Room temperate, sea level preasure
+    G4cout << "Aerogel Density: " << 0.53*g/cm3 << G4endl;
+    G4Material *aerogelMaterial = new G4Material("Aerogel", 0.53*g/cm3, nComponent,
+                                       kStateSolid, 293.*kelvin);
     G4double aerogelFixedIndex = 1.15;
-    G4double aero_n[]  = {aerogelFixedIndex, aerogelFixedIndex};
+    G4double aeroN[]  = {aerogelFixedIndex, aerogelFixedIndex};
 
     // G4double aerogelFixedAbsoLength = 0.16;
     G4double aerogelFixedAbsoLength = 100000.;
-    G4double aero_abs[] = {aerogelFixedAbsoLength, aerogelFixedAbsoLength};
+    G4double areogelAbso[] = {aerogelFixedAbsoLength, aerogelFixedAbsoLength};
     
     // add elemental composition of aerogel
-    aerogel_mat->AddElement(el_Si, 1);
-    aerogel_mat->AddElement(el_O, 4);
-    aerogel_mat->AddElement(el_H, 4);
+    // aerogelMaterial->AddElement(elSi, 1);
+    // aerogelMaterial->AddElement(elO, 4);
+    // aerogelMaterial->AddElement(elH, 4);
+
+    // G4Material *aerogelMaterial = new G4Material("Aerogel", 0.53*g/cm3, 2);
+
+    G4cout << "Making Si02 \n"; 
+    G4Material *SiO2 = new G4Material("SiO2", 2.201*g/cm3, 2);
+    SiO2->AddElement(nist->FindOrBuildElement("Si"), 1);
+    SiO2->AddElement(nist->FindOrBuildElement("O"), 2);
+    
+    G4cout << "Making H20 \n"; 
+    G4Material *H20 = new G4Material("H20", 1.00*g/cm3, 2);
+    H20->AddElement(nist->FindOrBuildElement("H"), 1);
+    H20->AddElement(nist->FindOrBuildElement("O"), 2);
+
+
+    // // // add elemental composition of aerogel
+    aerogelMaterial->AddMaterial(SiO2, 0.24);
+    aerogelMaterial->AddMaterial(nist->FindOrBuildMaterial("G4_AIR"), 0.75);
+    aerogelMaterial->AddMaterial(H20, 0.01);
 
     // // create aerogel material properties
     G4MaterialPropertiesTable *aero_MPT = new G4MaterialPropertiesTable();
-    aero_MPT->AddProperty("RINDEX",  energyRange, aero_n, 2);
-    aero_MPT->AddProperty("ABSLENGTH", energyRange, aero_abs, 2);
-    aerogel_mat->SetMaterialPropertiesTable(aero_MPT);
+    aero_MPT->AddProperty("RINDEX",  energyRange, aeroN, 2);    
+   
+    aerogelMaterial->SetMaterialPropertiesTable(aero_MPT);
 
 
 
     // Define glass
-    G4Material* glass_mat =  nist->FindOrBuildMaterial("G4_GLASS_PLATE");
+    G4Material* glassMaterial =  nist->FindOrBuildMaterial("G4_GLASS_PLATE");
     double glassFixedIndex = 1.5;
-    double glass_n[]  = {glassFixedIndex, glassFixedIndex};
-    G4MaterialPropertiesTable *glass_MPT = new G4MaterialPropertiesTable();
-    glass_MPT->AddProperty("RINDEX",  energyRange, glass_n, 2);
-    glass_mat->SetMaterialPropertiesTable(glass_MPT);
+    double glassN[]  = {glassFixedIndex, glassFixedIndex};
+    G4MaterialPropertiesTable *glassMPT = new G4MaterialPropertiesTable();
+    glassMPT->AddProperty("RINDEX",  energyRange, glassN, 2);
+    glassMaterial->SetMaterialPropertiesTable(glassMPT);
 
 
     //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -130,17 +150,17 @@ G4VPhysicalVolume* HLXDetectorConstruction::Construct()
     // World volume 
     // Define the word as a 1m X 1m x 2m cube
     // Will be more convient to work in cm so 100 cm X 100 cm X 200 cm
-    G4double world_sizeXY = 100 * cm;
-    G4double world_sizeZ  = 200 * cm;
+    G4double worldSizeXY = 100 * cm;
+    G4double worldZizeZ  = 200 * cm;
 
     G4Box* solidWorld =    
         new G4Box("World",                       //its name
-            0.5*world_sizeXY, 0.5*world_sizeXY, 0.5*world_sizeZ);     //its size
+            0.5*worldSizeXY, 0.5*worldSizeXY, 0.5*worldZizeZ);     //its size
         
     // Define a logical volume filled with air
     G4LogicalVolume* logicWorld =                         
         new G4LogicalVolume(solidWorld,          //its solid
-                            air_mat,           //its material
+                            airMaterial,           //its material
                             "World");            //its name
                                    
     G4VPhysicalVolume* physWorld = 
@@ -155,25 +175,28 @@ G4VPhysicalVolume* HLXDetectorConstruction::Construct()
                      
 
 
+
+
+
     // Define the radiator plane
     // Assumng a 10cm x 10cm x 1cm radiator block
     // Located 10 cm away from the world centre (i.e. the gun location)
-    G4double radiator_locZ = 10 * cm;
-    G4double radiator_sizeXY = 10 * cm;
-    G4double radiator_sizeZ = 1 * cm;
+    G4double radiatorLocz = 10 * cm;
+    G4double radiatorSizeXY = 10 * cm;
+    G4double radiatorSizeZ = 1 * cm;
     
 
     // Building the radiator plane
-    G4Box *solidRadiator = new G4Box("Radiator", radiator_sizeXY/2.0, radiator_sizeXY/2.0, radiator_sizeZ/2.0);
+    G4Box *solidRadiator = new G4Box("Radiator", radiatorSizeXY/2.0, radiatorSizeXY/2.0, radiatorSizeZ/2.0);
 
 
     // create logic radiator
     // Use the previously defined aerogel material
-    G4LogicalVolume* logicRadiator = new G4LogicalVolume(solidRadiator, aerogel_mat, "LogicRadiator");
+    G4LogicalVolume* logicRadiator = new G4LogicalVolume(solidRadiator, aerogelMaterial, "LogicRadiator");
 
     // create physical radiator
     new G4PVPlacement(0,                       //no rotation
-                G4ThreeVector(0, 0,radiator_locZ),                    //at position
+                G4ThreeVector(0, 0,radiatorLocz),                    //at position
                 logicRadiator,             //its logical volume
                 "logicRadiator",                //its name
                 logicWorld,                //its mother  volume
@@ -187,10 +210,10 @@ G4VPhysicalVolume* HLXDetectorConstruction::Construct()
 
     // Define as a square of width 60 cm and thickness 1nm (no need to be thick)
     // Detector is placed 20 cm away from the radiator exit surface
-    G4double detector_sizeXY = 60 * cm;
-    G4double detector_sizeZ  = 1 * cm;
-    G4double detector_locZ = 27.70926 * cm;   // Typical of values observed at NRC
-    G4ThreeVector pos_detect = G4ThreeVector(0, 0, detector_locZ + radiator_locZ + 0.5*radiator_sizeZ );
+    G4double detectorSizeXY = 60 * cm;
+    G4double detectorSizeZ  = 1 * cm;
+    G4double detectorLocZ = 27.70926 * cm;   // Typical of values observed at NRC
+    G4ThreeVector positionDetector = G4ThreeVector(0, 0, detectorLocZ + radiatorLocz + 0.5*radiatorSizeZ );
 
     
     // Define our CCD Detector
@@ -199,13 +222,13 @@ G4VPhysicalVolume* HLXDetectorConstruction::Construct()
 
     G4Box* solidDetector =    
     new G4Box("Detector",                       //its name
-        0.5*detector_sizeXY, 0.5*detector_sizeXY, detector_sizeZ);     //its size
+        0.5*detectorSizeXY, 0.5*detectorSizeXY, detectorSizeZ);     //its size
 
     // Defining the detector matrial as a vacuum.
     // We're only tracking the first interaction, this shouldn't really matter
     G4LogicalVolume* logicDetector =                         
         new G4LogicalVolume(solidDetector,         //its solid
-                            vacuum_mat,          //its material
+                            vacuumMaterial,          //its material
                             "Detector");           //its name
     
     // Add the sensitive detector
@@ -213,7 +236,7 @@ G4VPhysicalVolume* HLXDetectorConstruction::Construct()
 
     // // new G4LogicalSkinSurface("detector_skin", logicDetector, detectorSurface);
     new G4PVPlacement(0,                       //no rotation
-                pos_detect,                    //at position
+                positionDetector,                    //at position
                 logicDetector,             //its logical volume
                 "Detector",                //its name
                 logicWorld,                //its mother  volume
@@ -227,21 +250,21 @@ G4VPhysicalVolume* HLXDetectorConstruction::Construct()
     // Add a thin glass layer infront of CCD
     #ifdef REAL_CCD
         // Detector is placed 20 cm away from the radiator exit surface
-        G4double glass_sizeXY = 60 * cm;
-        G4double glass_sizeZ  = 0.7 * mm;   // Glass is 0.7 mm thik
-        G4double glass_gap = 0.82 * mm;   // distance between the glass and the CCD chip
-        G4ThreeVector pos_glass = G4ThreeVector(0, 0, (detector_locZ + radiator_locZ) - (glass_gap + 0.5*glass_sizeZ) );
+        G4double glassSizeXY = 60 * cm;
+        G4double glassSizeZ  = 0.7 * mm;   // Glass is 0.7 mm thik
+        G4double glassGap = 0.82 * mm;   // distance between the glass and the CCD chip
+        G4ThreeVector positionGlass = G4ThreeVector(0, 0, (detectorLocZ + radiatorLocz) - (glassGap + 0.5*glassSizeZ) );
 
         // Create physical object
         G4Box* solidGlass =    
                 new G4Box("Glass",//its name
-                          0.5*glass_sizeXY, 0.5*glass_sizeXY, 0.5*glass_sizeZ);
+                          0.5*glassSizeXY, 0.5*glassSizeXY, 0.5*glassSizeZ);
         // create logic radiator
-        G4LogicalVolume* logicGlass = new G4LogicalVolume(solidGlass, glass_mat, "logicGlass");
+        G4LogicalVolume* logicGlass = new G4LogicalVolume(solidGlass, glassMaterial, "logicGlass");
 
         // create physical radiator
         new G4PVPlacement(0,                       //no rotation
-                    pos_glass,                    //at position
+                    positionGlass,                    //at position
                     logicGlass,             //its logical volume
                     "logicGlass",                //its name
                     logicWorld,                //its mother  volume
