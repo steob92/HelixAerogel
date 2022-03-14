@@ -1,5 +1,5 @@
-#ifndef HLX_CCDDetector_h
-#define HLX_CCDDetector_h 1
+#ifndef HLXCCDDetector_h
+#define HLXCCDDetector_h 1
 
 #include "G4HCofThisEvent.hh"
 #include "G4SDManager.hh"
@@ -12,8 +12,8 @@
 #include "G4LogicalSkinSurface.hh"
 
 #include "G4RunManager.hh"
-// #include "G4AnalysisManager.hh"
-#include "g4root.hh"
+#include "G4AnalysisManager.hh"
+//#include "g4root.hh"
 
 
 #include "TFile.h"
@@ -25,15 +25,15 @@ class G4HCofThisEvent;
 class G4TouchableHistory;
 class G4Step;
 using namespace std;
-class HLX_CCDDetector : public G4VSensitiveDetector {
+class HLXCCDDetector : public G4VSensitiveDetector {
 
 public:
 
     // Constructor
-    HLX_CCDDetector(const G4String &name);
+    HLXCCDDetector(const G4String &name);
 
     // Destructor
-    virtual ~HLX_CCDDetector();
+    virtual ~HLXCCDDetector();
 
     // Methods
     virtual void Initialize(G4HCofThisEvent* hitsCollectionOfThisEvent);
