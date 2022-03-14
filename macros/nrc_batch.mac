@@ -7,7 +7,7 @@
 /run/verbose 2
 #
 # Change the default number of threads (in multi-threaded mode)
-#/run/numberOfThreads 4
+/run/numberOfThreads NTREAD
 #
 # Initialize kernel
 /run/initialize
@@ -16,7 +16,27 @@
 /process/em/verbose 0
 /process/em/printParameters
 
-
+# Run 0
 # run the beam
 /gun/energy ENG MeV
 /run/beamOn NPART
+
+# Run 1
+/process/inactivate msc e-
+/run/beamOn 1000
+
+# Run 2
+/process/inactivate eBrem e-
+/run/beamOn 1000
+
+# Run 3
+/process/inactivate Rayl e-
+/run/beamOn 1000
+
+# Run 4
+/process/inactivate compt e-
+/run/beamOn 1000
+
+# Run 5
+/process/inactivate CoulombScat e-
+/run/beamOn 1000
