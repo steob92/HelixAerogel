@@ -34,22 +34,30 @@ int main(int argc,char** argv)
   auto* runManager =
     G4RunManagerFactory::CreateRunManager(G4RunManagerType::Default);
 
+
+  runManager->SetNumberOfThreads(1);
+
+  // Physics list
+  G4VModularPhysicsList* physicsList = new QBBC;
+  physicsList->SetVerboseLevel(1);
+  G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
+  physicsList->RegisterPhysics(opticalPhysics);
+  runManager->SetUserInitialization(physicsList);
+
+  // runManager->SetUserInitialization(physicsList);
+  // Run user defined physics list
+  // runManager->SetUserInitialization(new PhysicsList);
+
   // Set mandatory initialization classes
   //
   // Detector construction
   runManager->SetUserInitialization(new HLXDetectorConstruction());
 
-  // Physics list
-  // G4VModularPhysicsList* physicsList = new QBBC;
-  // physicsList->SetVerboseLevel(1);
-  // G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
-  // physicsList->RegisterPhysics(opticalPhysics);
 
 
 
-  // runManager->SetUserInitialization(physicsList);
-  // Run user defined physics list
-  runManager->SetUserInitialization(new PhysicsList);
+
+
 
     
   // User action initialization

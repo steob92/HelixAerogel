@@ -4,10 +4,11 @@
 #include "G4VUserDetectorConstruction.hh"
 #include "globals.hh"
 
-#include "HLX_CCDDetector.hh"
+#include "HLXCCDDetector.hh"
+#include "HLXMaterials.hh"
 
-class G4VPhysicalVolume;
-class G4LogicalVolume;
+// class G4VPhysicalVolume;
+// class G4LogicalVolume;
 
 /// Detector construction class to define materials and geometry.
 
@@ -23,6 +24,10 @@ class HLXDetectorConstruction : public G4VUserDetectorConstruction
 
   protected:
     G4LogicalVolume*  fScoringVolume;
+   
+  private:
+    HLXMaterials *fMaterials;
+    virtual void ConstructSDandField();
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

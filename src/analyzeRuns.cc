@@ -165,7 +165,7 @@ double wrap_getRadius(Double_t *x, Double_t *par)
 // Function to reduce single run
 void processRun(TTree *data, double &mean, double &std, double &mean_err, double &std_err, double &par, double &par_err)
 {
-    int rebin = 2;
+    int rebin = 7;
     int n_bins = 3694/rebin;
     double bin_up = 214.772;
     double bin_low = bin_up - (n_bins * 8e-3 * rebin);
@@ -200,12 +200,7 @@ void processRun(TTree *data, double &mean, double &std, double &mean_err, double
     par = fmax[iret];
     par_err = fmax_err[iret];
 
-    // TCanvas *c1 = new TCanvas();
-    // fH1->Draw();
-    // c1->Print("Test.png");
-
-
-    delete fH1;
+    // delete fH1;
 }
 
 
@@ -228,7 +223,6 @@ int main(int argc, char *argv[])
 
     // Assumed spectral index
     double n = 1.15;
-
     for (i = 0; i < argc-1 ; i++)
     {
         filename[i] = argv[i+1];
@@ -260,17 +254,19 @@ int main(int argc, char *argv[])
     // gPara->Fit("fRadius");
 
     // Plot the cherenkov ring radius as a function of energy
-    TCanvas *c1 = new TCanvas();
+    TCanvas *cRadius = new TCanvas();
     gMean->SetTitle("Cherenkov Ring Radius;Energy [MeV];Radius [mm]");
     gMean->Draw("AP");
     // gPara->Draw("SAME,P");
     // fRadius->Draw("SAME");
-    c1->SetGrid();
-    c1->Print("MeanRadius.png");
+    cRadius->SetGrid();
+    cRadius->Print("MeanRadius.png");
     for ( i = 0; i < energy.size(); i++)
     {
         cout << i << " " << energy[i] << " " << mean[i] << " " << std[i] << " " << par[i] << " " << par_err[i] << endl;
     }
+
+    delete cRadius;
 
     return 0;
 }
