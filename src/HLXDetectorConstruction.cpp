@@ -87,29 +87,60 @@ G4VPhysicalVolume* HLXDetectorConstruction::Construct()
     // Located 10 cm away from the world centre (i.e. the gun location)
     G4double radiatorLocz = 10 * cm;
     G4double radiatorSizeXY = 10 * cm;
-    G4double radiatorSizeZ = 10 * cm;
+    G4double radiatorSizeZ = 1 * cm;
     
 
+    G4double blockSize = 2*mm;
+    G4int nRadiatorXY = radiatorSizeXY / blockSize;
+    G4int nRadiatorZ = radiatorSizeZ / blockSize;
     // Building the radiator plane
+    // G4Box *solidRadiator = new G4Box("Radiator", blockSize/2.0, blockSize/2.0, blockSize/2.0);
     G4Box *solidRadiator = new G4Box("Radiator", radiatorSizeXY/2.0, radiatorSizeXY/2.0, radiatorSizeZ/2.0);
-
 
     // create logic radiator
     // Use the previously defined aerogel material
     G4LogicalVolume* logicRadiator = new G4LogicalVolume(solidRadiator, fMaterials->GetMaterial("aerogel"), "LogicRadiator");
+    // Construct a lego matrix
+    // can later be used to vary thickness refractive index
+    // for (int i = 0; i < nRadiatorXY; i++)
+    // {
+    //     for (int j = 0; j < nRadiatorXY; j++)
+    //     {
+    //         for (int k = 0; k < nRadiatorZ; k++)
+    //         {
+
+    //             // create physical radiator
+    //             G4PVPlacement* physRadiator = new G4PVPlacement(0,                  //no rotation
+    //                         G4ThreeVector(-5*cm + (i)*blockSize, -5*cm + (j)*blockSize, radiatorLocz -0.5*cm + (k)*blockSize),                       //at position
+    //                         logicRadiator,                                          //its logical volume
+    //                         "logicRadiator",                                        //its name
+    //                         logicWorld,                                             //its mother  volume
+    //                         false,                                                  //no boolean operation
+    //                         k + 100*j + 10000 * i,                                                      //copy number
+    //                         checkOverlaps);                                         //overlaps checking
+    //         }
+    //     }
+        
+    // }
+
 
     // create physical radiator
-    G4PVPlacement* physRadiator = new G4PVPlacement(0,                       //no rotation
-                G4ThreeVector(0, 0,radiatorLocz),                    //at position
-                logicRadiator,             //its logical volume
-                "logicRadiator",                //its name
-                logicWorld,                //its mother  volume
-                false,                   //no boolean operation
-                0,                       //copy number
-                checkOverlaps);          //overlaps checking
-    
+    G4PVPlacement* physRadiator = new G4PVPlacement(0,                  //no rotation
+                G4ThreeVector(0, 0, radiatorLocz),                      //at position
+                logicRadiator,                                          //its logical volume
+                "logicRadiator",                                        //its name
+                logicWorld,                                             //its mother  volume
+                false,                                                  //no boolean operation
+                0,                                                      //copy number
+                checkOverlaps); 
 
 
+
+    // G4OpticalSurface * OpAirSurface = new G4OpticalSurface("AirSurface");
+    // OpAirSurface->SetModel(unified);
+    // OpAirSurface->SetType(dielectric_dielectric);
+    // OpAirSurface->SetFinish(ground);
+    // G4LogicalBorderSurface* WaterSurface = new G4LogicalBorderSurface("AirSurface",physWorld, physRadiator, OpAirSurface);
 
     // Build the detector plane
 
@@ -127,7 +158,7 @@ G4VPhysicalVolume* HLXDetectorConstruction::Construct()
     new G4Box("Detector",                       //its name
         0.5*detectorSizeXY, 0.5*detectorSizeXY, detectorSizeZ);     //its size
 
-    // Defining the detector matrial as a vacuum.
+    // Defining the detector matrial as a air.
     // We're only tracking the first interaction, this shouldn't really matter
     G4LogicalVolume* logicDetector =                         
         new G4LogicalVolume(solidDetector,         //its solid
