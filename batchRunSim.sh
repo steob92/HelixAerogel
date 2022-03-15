@@ -4,7 +4,7 @@
 ENERGIES=(35 30 25 20 15 10)
 # ENERGIES=(35)
 # Number of particles to run
-NPART=10000
+NPART=1000
 NPROC=`nproc`
 
 
@@ -30,11 +30,11 @@ for ENG in ${ENERGIES[@]}; do
     # mv output5.root ${ENG}MeV_NoMSCeBremRaylcomptCoulombScat.root
 
     hadd ${ENG}MeV_AllPhysics.root `ls output0_t*.root`
-    hadd ${ENG}MeV_NoMSC.root `ls output1_t*.root`
-    hadd ${ENG}MeV_NoMSCeBrem.root `ls output2_t*.root`
-    hadd ${ENG}MeV_NoMSCeBremRayl.root `ls output3_t*.root`
-    hadd ${ENG}MeV_NoMSCeBremRaylcompt.root `ls output4_t*.root`
-    hadd ${ENG}MeV_NoMSCeBremRaylcomptCoulombScat.root `ls output5_t*.root`
+    hadd ${ENG}MeV_NoBrem.root `ls output1_t*.root`
+    hadd ${ENG}MeV_NoBremNoRayl.root `ls output2_t*.root`
+    hadd ${ENG}MeV_NoBremNoRaylNoCompt.root `ls output3_t*.root`
+    hadd ${ENG}MeV_NoBremNoRaylNoComptNoCoul.root `ls output4_t*.root`
+    hadd ${ENG}MeV_NoBremNoRaylNoComptNoCoulNoMSC.root `ls output5_t*.root`
 
 
     rm output*.root
