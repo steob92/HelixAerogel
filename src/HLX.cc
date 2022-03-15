@@ -4,8 +4,8 @@
 #include "G4RunManagerFactory.hh"
 
 #include "G4UImanager.hh"
-#include "QBBC.hh"
 
+#include "G4PhysListFactory.hh"
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
 #include "G4OpticalPhysics.hh"
@@ -27,7 +27,7 @@ int main(int argc,char** argv)
   }
 
   // Optionally: choose a different Random engine...
-  // G4Random::setTheEngine(new CLHEP::MTwistEngine);
+  G4Random::setTheEngine(new CLHEP::MTwistEngine);
   
   // Construct the default run manager
   //
@@ -38,7 +38,10 @@ int main(int argc,char** argv)
   runManager->SetNumberOfThreads(1);
 
   // Physics list
-  G4VModularPhysicsList* physicsList = new QBBC;
+  // G4VModularPhysicsList* physicsList = new LHEP;
+  G4PhysListFactory physListFactory;
+  G4VModularPhysicsList* physicsList = physListFactory.GetReferencePhysList("QGSP_BIC_HP_EMZ");
+
   physicsList->SetVerboseLevel(1);
   G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
   physicsList->RegisterPhysics(opticalPhysics);
