@@ -22,21 +22,22 @@
 /run/beamOn NPART
 
 # Run 1
-/process/inactivate msc e-
-/run/beamOn 1000
+/process/inactivate eBrem e-
+/run/beamOn NPART
 
 # Run 2
-/process/inactivate eBrem e-
-/run/beamOn 1000
+/process/inactivate Rayl e-
+/run/beamOn NPART
 
 # Run 3
-/process/inactivate Rayl e-
-/run/beamOn 1000
+/process/inactivate compt e-
+/run/beamOn NPART
 
 # Run 4
-/process/inactivate compt e-
-/run/beamOn 1000
+/process/inactivate CoulombScat e-
+/run/beamOn NPART
+
 
 # Run 5
-/process/inactivate CoulombScat e-
-/run/beamOn 1000
+/process/inactivate msc e-
+/run/beamOn NPART
