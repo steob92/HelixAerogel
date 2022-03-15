@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <cmath>
 
 #include "G4NistManager.hh"
 #include "G4Material.hh"
@@ -26,8 +27,13 @@ class HLXMaterials
         std::vector <G4Material*> fMaterials;
         G4double fIsoMinWL;
         G4double fIsoMaxWL;
+        G4double fEnergyRangeMin;
+        G4double fEnergyRangeMax;
+        G4double fDeltaEnergy;
+        G4int fNPoints;
         G4double *fEnergyRange;
         G4NistManager* fNist;
+
 
 };
 
