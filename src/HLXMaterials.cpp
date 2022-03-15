@@ -7,9 +7,18 @@ HLXMaterials::HLXMaterials()
 {
     fIsoMinWL = 400;
     fIsoMaxWL = 700;
-    fEnergyRange = new G4double[2];
-    fEnergyRange[0] = 1239.84193*eV/fIsoMaxWL;
-    fEnergyRange[1] = 1239.84193*eV/fIsoMinWL;
+    fNPoints = 100;
+    fEnergyRange = new G4double[fNPoints];
+    fEnergyRangeMin = 1239.84193/fIsoMaxWL;
+    fEnergyRangeMax = 1239.84193/fIsoMinWL;
+    
+    fDeltaEnergy = (fEnergyRangeMax - fEnergyRangeMin) / fNPoints;
+    for (int i = 0; i < fNPoints; i++)
+    {
+        fEnergyRange[i] = (fEnergyRangeMin + i*fDeltaEnergy)*eV;
+
+        G4cout << i << " " << fEnergyRange[i] << G4endl;
+    }
     fNist = G4NistManager::Instance();
 }
 
@@ -62,7 +71,11 @@ void HLXMaterials::DefineMaterials()
     // create refractive index for vacuum
     G4MaterialPropertiesTable *vacuumMPT = new G4MaterialPropertiesTable();
     double vacuumFixedIndex = 1.;
-    G4double vacuumN[] = {vacuumFixedIndex, vacuumFixedIndex};
+    G4double *vacuumN = new G4double[fNPoints];
+    for (int i = 0; i < fNPoints; i++)
+    {
+        vacuumN[i] = vacuumFixedIndex;
+    }
     vacuumMPT->AddProperty("RINDEX", fEnergyRange, vacuumN, 2);
     vacuumMaterial->SetMaterialPropertiesTable(vacuumMPT);
 
@@ -76,8 +89,12 @@ void HLXMaterials::DefineMaterials()
     G4Material* airMaterial = fNist->FindOrBuildMaterial("G4_AIR");
     G4MaterialPropertiesTable *airMPT = new G4MaterialPropertiesTable();
     double airFixedIndex = 1.003;
-    G4double airN[] = {airFixedIndex, airFixedIndex};
-    airMPT->AddProperty("RINDEX", fEnergyRange, airN, 2);
+    G4double *airN = new G4double[fNPoints];
+    for (int i = 0; i < fNPoints; i++)
+    {
+        airN[i] = airFixedIndex;
+    }    
+    airMPT->AddProperty("RINDEX", fEnergyRange, airN, fNPoints);
     airMaterial->SetMaterialPropertiesTable(airMPT);
 
     fMaterials.push_back(airMaterial);
@@ -95,12 +112,26 @@ void HLXMaterials::DefineMaterials()
     G4int nComponent = 3;
 
     // Room temperate, sea level preasure                                                                                                                                                                            
-    G4Material *aerogelMaterial = new G4Material("Aerogel", 0.531*g/cm3, nComponent,
+    G4Material *aerogelMaterial = new G4Material("Aerogel", 0.53*g/cm3, nComponent,
                                         kStateGas, 293.*kelvin,  101325.*pascal);
 
-    // //See Buzykaev et al NIM A433 (1999) 396       
     double aerogelFixedIndex = 1.15;                                                                                                                                                     
-    double aero_n[]  = {aerogelFixedIndex, aerogelFixedIndex};
+    G4double *aeroN = new G4double[fNPoints];
+    for (int i = 0; i < fNPoints; i++)
+    {
+        aeroN[i] = aerogelFixedIndex;
+    }    
+    // double aeroAbsEnergyRange[100];
+    // double aeroAbsLength[100];
+    // double delEnergy =(fEnergyRange[1] - fEnergyRange[0]) / 100;
+    // double a = 0.982;
+    // double c = 0.007;
+    // for (int i = 0; i < 100; i++)
+    // {
+    //     aeroAbsEnergyRange[i] = fEnergyRange[0] + i * delEnergy;
+    //     double t = a * std::exp( -c / std::pow(1239.84193*eV / aeroAbsEnergyRange[i], 4));
+    //     aeroAbsLength[i] = -1/(std::log(t));
+    // } 
 
     // add elemental composition of aerogel                                                                                                                                                                          
     aerogelMaterial->AddElement(el_Si, 1);
@@ -109,7 +140,8 @@ void HLXMaterials::DefineMaterials()
 
     // // create aerogel material properties                                                                                                                                                                         
     G4MaterialPropertiesTable *aeroMPT = new G4MaterialPropertiesTable();
-    aeroMPT->AddProperty("RINDEX",  fEnergyRange, aero_n, 2);
+    aeroMPT->AddProperty("RINDEX",  fEnergyRange, aeroN, fNPoints);
+    // aeroMPT->AddProperty("ABSLENGTH",  aeroAbsEnergyRange, aeroAbsLength, 100);
     aerogelMaterial->SetMaterialPropertiesTable(aeroMPT);
 
     fMaterials.push_back(aerogelMaterial);
@@ -123,12 +155,17 @@ void HLXMaterials::DefineMaterials()
     double glassFixedIndex = 1.5;
     double glassN[]  = {glassFixedIndex, glassFixedIndex};
     G4MaterialPropertiesTable *glassMPT = new G4MaterialPropertiesTable();
-    glassMPT->AddProperty("RINDEX",  fEnergyRange, glassN, 2);
+    glassMPT->AddProperty("RINDEX",  fEnergyRange, glassN, fNPoints);
     glassMaterial->SetMaterialPropertiesTable(glassMPT);
 
     fMaterials.push_back(glassMaterial);
     fMaterialNames.push_back("glass");
     //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+    // delete aeroN;
+    // delete airN;
+    // delete vacuumN;
+    
 
 }
 
