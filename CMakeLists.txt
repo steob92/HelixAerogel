@@ -26,9 +26,10 @@ add_definitions(-DALL_PHYSICS)
 # Define putting glass plane infront of CCD
 # add_definitions(-DREAL_CCD)
 # Some definitions for quick turing on/off of components
-#add_definitions(-DDIVERGENCE)       # Beam divergence
+add_definitions(-DDIVERGENCE)       # Beam divergence
 add_definitions(-DGAUSSIAN)         # Gaussian beam profile 
 #add_definitions(-DVARENERGY)        # Variable beam energy
+add_definitions(-DDEVMODE)         # Dev mode for new features 
 
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -73,6 +74,12 @@ set(HLX_SCRIPTS
   batchRunSim.sh
 )
 
+
+set(HLX_DATA
+  thickness.dat
+  surface.dat
+)
+
 foreach(_script ${HLX_MACROS})
   configure_file(
     ${PROJECT_SOURCE_DIR}/macros/${_script}
@@ -86,6 +93,15 @@ foreach(_script ${HLX_SCRIPTS})
   configure_file(
     ${PROJECT_SOURCE_DIR}/${_script}
     ${PROJECT_BINARY_DIR}/${_script}
+    COPYONLY
+    )
+endforeach()
+
+
+foreach(_script ${HLX_DATA})
+  configure_file(
+    ${PROJECT_SOURCE_DIR}/data/${_script}
+    ${PROJECT_BINARY_DIR}/data/${_script}
     COPYONLY
     )
 endforeach()

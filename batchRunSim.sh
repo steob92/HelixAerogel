@@ -4,8 +4,8 @@
 ENERGIES=(35 30 25 20 15 10)
 # ENERGIES=(35)
 # Number of particles to run
-NPART=1000
-NPROC=`nproc`
+NPART=100000
+NPROC=$(expr `nproc` - 2) 
 
 
 # Create and run a tempory macro for each energy
@@ -35,6 +35,7 @@ for ENG in ${ENERGIES[@]}; do
     hadd ${ENG}MeV_NoBremNoRaylNoCompt.root `ls output3_t*.root`
     hadd ${ENG}MeV_NoBremNoRaylNoComptNoCoul.root `ls output4_t*.root`
     hadd ${ENG}MeV_NoBremNoRaylNoComptNoCoulNoMSC.root `ls output5_t*.root`
+    hadd ${ENG}MeV_NoBremNoRaylNoComptNoCoulNoMSCNoIoni.root `ls output6_t*.root`
 
 
     rm output*.root

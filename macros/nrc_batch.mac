@@ -41,3 +41,7 @@
 # Run 5
 /process/inactivate msc e-
 /run/beamOn NPART
+
+# Run 6
+/process/inactivate eIoni e-
+/run/beamOn NPART
