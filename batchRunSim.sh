@@ -1,5 +1,6 @@
 #!/bin/bash
-
+#When working with obriens/root-geant4:v0.1
+source sourceGeant4.sh
 # Energies to use
 ENERGIES=(35 30 25 20 15 10)
 # ENERGIES=(35)
