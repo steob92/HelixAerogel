@@ -67,10 +67,12 @@ set(HLX_MACROS
   nrc.mac
   vis.mac
   nrc_batch.mac
+  nrc_batch_div.mac
   )
 
 set(HLX_SCRIPTS
   batchRunSim.sh
+  batchRunSimDiv.sh
   sourceGeant4.sh
 )
 

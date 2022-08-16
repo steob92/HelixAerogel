@@ -2,7 +2,8 @@
 #When working with obriens/root-geant4:v0.1
 source sourceGeant4.sh
 # Energies to use
-ENERGIES=(35 30 25 20 15 10)
+ENERGIES=35
+DIVS=(1 2 3 4 5 10 15 20)
 # ENERGIES=(35)
 # Number of particles to run
 NPART=1000
@@ -11,12 +12,13 @@ NPROC=1
 
 
 # Create and run a tempory macro for each energy
-for ENG in ${ENERGIES[@]}; do
-    sed -e "s|ENG|$ENG|" \
+for DIV in ${DIVS[@]}; do
+    sed -e "s|ENG|$ENERGIES|" \
         -e "s|NPART|$NPART|" \
-        -e "s|NTREAD|$NPROC|"  macros/nrc_batch.mac > nrc_batch_tmp.mac
+        -e "s|ADIV|$DIV|" \
+        -e "s|NTREAD|$NPROC|"  macros/nrc_batch_div.mac > nrc_batch_tmp.mac
 
-    ./bin/HLX nrc_batch_tmp.mac 2>&1 | tee ${ENG}MeV.log
+    ./bin/HLX nrc_batch_tmp.mac 2>&1 | tee ${DIV}Deg.log
     # hadd output0.root `ls output0_t*.root`
     # hadd output1.root `ls output1_t*.root`
     # hadd output2.root `ls output2_t*.root`
@@ -31,7 +33,7 @@ for ENG in ${ENERGIES[@]}; do
     # mv output4.root ${ENG}MeV_NoMSCeBremRaylcompt.root
     # mv output5.root ${ENG}MeV_NoMSCeBremRaylcomptCoulombScat.root
 
-    hadd ${ENG}MeV_AllPhysics.root `ls output0_t*.root`
+    hadd ${DIV}Deg_AllPhysics.root `ls output0_t*.root`
     # hadd ${ENG}MeV_NoBrem.root `ls output1_t*.root`
     # hadd ${ENG}MeV_NoBremNoRayl.root `ls output2_t*.root`
     # hadd ${ENG}MeV_NoBremNoRaylNoCompt.root `ls output3_t*.root`
