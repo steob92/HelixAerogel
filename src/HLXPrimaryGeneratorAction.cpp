@@ -23,7 +23,10 @@ HLXPrimaryGeneratorAction::HLXPrimaryGeneratorAction()
   //  <2mm C. K. Ross et. al (2008) 
   fsigmaBeamX(2.* mm / (2 * std::sqrt(2 * std::log(2)))), // Converting FWHM to Gaussian width
   fsigmaBeamY(2.* mm / (2 * std::sqrt(2 * std::log(2)))), // Converting FWHM to Gaussian width
-  fThetaDiv(1.00 * CLHEP::pi / 180.)  // default to 0.25 degrees
+  // fThetaDiv(1.00 * CLHEP::pi / 180.),  // default to 0.25 degrees
+  fMomentum(35 *MeV), // Particle momentum default to 35 MeV
+  fSigmaMomentum(0*MeV), // Particle momentum width
+  fSigmaAngle( 2.0 * deg)  // Divergence
 {
 
   CLHEP::HepRandom::setTheSeed((unsigned)clock());
@@ -52,6 +55,8 @@ HLXPrimaryGeneratorAction::HLXPrimaryGeneratorAction()
   #ifdef VARENERGY
     fBeamEnergy = true; 
   #endif
+
+  DefineCommands();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -59,6 +64,8 @@ HLXPrimaryGeneratorAction::HLXPrimaryGeneratorAction()
 HLXPrimaryGeneratorAction::~HLXPrimaryGeneratorAction()
 {
   delete fParticleGun;
+  delete fMessenger;
+  // delete fEnvelopeBox;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -73,17 +80,37 @@ void HLXPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4double y0 = 0;
   G4double z0 = 0;
 
-  // Initial particle momentium
-  G4double px0 = 0;
-  G4double py0 = 0;
-  G4double pz0 = 1;
+
+  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+  G4String particleName;
+
+  // Only consider electrons
+  G4ParticleDefinition* particle
+    = particleTable->FindParticle(particleName="e-");
+  
+
+  fParticleGun->SetParticleDefinition(particle);
+
+  // Get and Set the particle's momentum and energy
+  auto pp = fMomentum + (G4UniformRand()-0.5)*fSigmaMomentum;
+  auto mass = particle->GetPDGMass();
+  auto ekin = std::sqrt(pp*pp+mass*mass)-mass;
+  fParticleGun->SetParticleEnergy(ekin);
 
 
-  // Beam divergence
-  G4double theta = 0;
-  G4double phi = 0;
-  fThetaDiv = 2.0 * CLHEP::pi / 180.;
 
+  auto phi = (G4UniformRand()-0.5)*fSigmaAngle; // Beam opening angle (divergence)
+  auto theta = 2*CLHEP::pi * G4UniformRand() ; // 0-360 degrees azimutal angle
+
+  // // Spherical to Cartesian coordinates
+  // px0 = std::sin(phi) * std::cos(theta);
+  // py0 = std::sin(phi) * std::sin(theta);
+  // pz0 = std::cos(phi);
+  fParticleGun->SetParticleMomentumDirection(
+                  G4ThreeVector(
+                    std::sin(phi) * std::cos(theta),
+                    std::sin(phi) * std::sin(theta),
+                    std::cos(phi)));
 
 
   // Define a uniform beam of 5mm width
@@ -109,33 +136,50 @@ void HLXPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
   }
 
-
-  if (fDivergence)
-  {
-    // Uniformally distributed theta and pi
-    // phi is the half opening angle of the beam divergence
-    // Theta is the angle in the x-y plane
-    theta = 2*CLHEP::pi * G4UniformRand() ; // 0-360 degrees
-    // theta = 0.5 * fThetaDiv * G4UniformRand(); // 0 - half Divergence
-    phi = 0.5 * fThetaDiv * G4UniformRand(); // 0 - half Divergence
-
-    // Spherical to Cartesian coordinates
-    px0 = std::sin(phi) * std::cos(theta);
-    py0 = std::sin(phi) * std::sin(theta);
-    pz0 = std::cos(phi);
-  }
-
-
-
-  if (fBeamEnergy)
-  {
-    G4double eng = fParticleGun->GetParticleEnergy();
-    // 0.4% uncertinaty on beam energy
-    fParticleGun->SetParticleEnergy(G4RandGauss::shoot( eng, 0.004*eng));
-  }
-
   fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(px0, py0, pz0));
+
   fParticleGun->GeneratePrimaryVertex(anEvent);
 
 }
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void HLXPrimaryGeneratorAction::DefineCommands()
+{
+  // Define /B5/generator command directory using generic messenger class
+  fMessenger
+    = new G4GenericMessenger(this,
+                             "/HLX/generator/",
+                             "Primary generator control");
+
+  // momentum command
+  auto& momentumCmd
+    = fMessenger->DeclarePropertyWithUnit("momentum", "MeV", fMomentum,
+        "Mean momentum of primaries.");
+  momentumCmd.SetParameterName("p", true);
+  momentumCmd.SetRange("p>=0.");
+  momentumCmd.SetDefaultValue("35.");
+  // ok
+  //momentumCmd.SetParameterName("p", true);
+  //momentumCmd.SetRange("p>=0.");
+
+  // sigmaMomentum command
+  auto& sigmaMomentumCmd
+    = fMessenger->DeclarePropertyWithUnit("sigmaMomentum",
+        "MeV", fSigmaMomentum, "Sigma momentum of primaries.");
+  sigmaMomentumCmd.SetParameterName("sp", true);
+  sigmaMomentumCmd.SetRange("sp>=0.");
+  sigmaMomentumCmd.SetDefaultValue("0.");
+
+  // sigmaAngle command
+  auto& sigmaAngleCmd
+    = fMessenger->DeclarePropertyWithUnit("sigmaAngle", "deg", fSigmaAngle,
+        "Sigma angle divergence of primaries.");
+  sigmaAngleCmd.SetParameterName("t", true);
+  sigmaAngleCmd.SetRange("t>=0.");
+  sigmaAngleCmd.SetDefaultValue("0");
+
+}
+

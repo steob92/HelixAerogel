@@ -1,12 +1,13 @@
 #ifndef HLXPrimaryGeneratorAction_h
 #define HLXPrimaryGeneratorAction_h 1
-
+#include "G4GenericMessenger.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ParticleGun.hh"
 #include "globals.hh"
 
 class G4ParticleGun;
 class G4Event;
+class G4GenericMessenger;
 class G4Box;
 
 /// The primary generator action class with particle gun.
@@ -28,7 +29,10 @@ class HLXPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     G4bool fUniform;
     G4bool fDivergence;
     G4bool fBeamEnergy;
-    G4double fThetaDiv;
+    // G4double fThetaDiv;
+    G4double fMomentum;
+    G4double fSigmaMomentum;
+    G4double fSigmaAngle;
     G4String fBeamType;
     G4double fsigmaBeamX;
     G4double fsigmaBeamY;
@@ -36,7 +40,9 @@ class HLXPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   private:
     G4ParticleGun*  fParticleGun; // pointer a to G4 gun class
     G4Box* fEnvelopeBox;
+    G4GenericMessenger* fMessenger;
 
+    void DefineCommands();
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
