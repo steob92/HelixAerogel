@@ -82,9 +82,8 @@ void HLXAerogel::MakeAerogel( G4LogicalVolume *logicWorld, G4double radiatorLocz
     G4int nRadiatorXY = radiatorSizeXY / blockSizeXY;
     G4int nRadiatorZ = radiatorSizeZ / blockSizeZ;
 
-    G4Box *solidRadiator = new G4Box("Radiator", blockSizeXY/2.0, blockSizeXY/2.0, blockSizeZ/2.0);
+    // G4Box *solidRadiator = new G4Box("Radiator", blockSizeXY/2.0, blockSizeXY/2.0, blockSizeZ/2.0);
     // G4Box *solidRadiator = new G4Box("Radiator", radiatorSizeXY/2.0, radiatorSizeXY/2.0, radiatorSizeZ/2.0);
-    G4LogicalVolume* logicRadiator = new G4LogicalVolume(solidRadiator, fMaterials->GetMaterial("aerogel"), "LogicRadiator");
 
     float thickness = 0;
     float surface = 0;
@@ -94,28 +93,48 @@ void HLXAerogel::MakeAerogel( G4LogicalVolume *logicWorld, G4double radiatorLocz
     {
         for (int j = 0; j < nRadiatorXY; j++)
         {
-            for (int k = 0; k < nRadiatorZ; k++)
-            {
+
+            // Place a block at of thickness defined at x,y
+            // At a centre of the tile
+            
+            surface = GetSurface((i)*blockSizeXYf, (j)*blockSizeXYf);
+            blockSizeZ = GetThickness((i)*blockSizeXYf, (j)*blockSizeXYf);
+            G4Box *solidRadiator = new G4Box("Radiator", blockSizeXY/2.0, blockSizeXY/2.0, blockSizeZ/2.0);
+            G4LogicalVolume* logicRadiator = new G4LogicalVolume(solidRadiator, fMaterials->GetMaterial("aerogel"), "LogicRadiator");
+
+            G4PVPlacement* physRadiator = new G4PVPlacement(0,                  //no rotation
+                        G4ThreeVector(-5*cm + (i)*blockSizeXY, -5*cm + (j)*blockSizeXY, radiatorLocz -0.6*cm + surface - blockSizeZ/2.),                       //at position
+                        logicRadiator,                                          //its logical volume
+                        "logicRadiator",                                        //its name
+                        logicWorld,                                             //its mother  volume
+                        false,                                                  //no boolean operation
+                        100*j + 10000 * i,                                      //copy number
+                        checkOverlaps);
+
+            delete solidRadiator;
+            delete logicRadiator;
+            // for (int k = 0; k < nRadiatorZ; k++)
+            // {
 
 
-                surface = GetSurface((i)*blockSizeXYf, (j)*blockSizeXYf);
-                thickness = GetThickness((i)*blockSizeXYf, (j)*blockSizeXYf);
+            //     surface = GetSurface((i)*blockSizeXYf, (j)*blockSizeXYf);
+            //     thickness = GetThickness((i)*blockSizeXYf, (j)*blockSizeXYf);
 
-                dist = surface - (k)*blockSizeZf;
-                if ((dist < thickness) && (dist >= 0))
-                {
+            //     dist = surface - (k)*blockSizeZf;
+            //     if ((dist < thickness) && (dist >= 0))
+            //     {
 
-                    // create physical radiator
-                    G4PVPlacement* physRadiator = new G4PVPlacement(0,                  //no rotation
-                                G4ThreeVector(-5*cm + (i)*blockSizeXY, -5*cm + (j)*blockSizeXY, radiatorLocz -0.6*cm + (k)*blockSizeZ),                       //at position
-                                logicRadiator,                                          //its logical volume
-                                "logicRadiator",                                        //its name
-                                logicWorld,                                             //its mother  volume
-                                false,                                                  //no boolean operation
-                                k + 100*j + 10000 * i,                                                      //copy number
-                                checkOverlaps);                                         //overlaps checking
-                }
-            }
+            //         // create physical radiator
+            //         G4PVPlacement* physRadiator = new G4PVPlacement(0,                  //no rotation
+            //                     G4ThreeVector(-5*cm + (i)*blockSizeXY, -5*cm + (j)*blockSizeXY, radiatorLocz -0.6*cm + (k)*blockSizeZ),                       //at position
+            //                     logicRadiator,                                          //its logical volume
+            //                     "logicRadiator",                                        //its name
+            //                     logicWorld,                                             //its mother  volume
+            //                     false,                                                  //no boolean operation
+            //                     k + 100*j + 10000 * i,                                                      //copy number
+            //                     checkOverlaps);                                         //overlaps checking
+            //     }
+            // }
         }
         
     }
