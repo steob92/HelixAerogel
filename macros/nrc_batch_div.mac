@@ -19,6 +19,7 @@
 # Run 0
 # run the beam
 #/gun/energy ENG MeV
+/HLX/generator/beamX 25
 /HLX/generator/momentum ENG MeV
 /HLX/generator/sigmaAngle ADIV deg
 /run/beamOn NPART

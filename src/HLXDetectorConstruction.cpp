@@ -55,9 +55,9 @@ G4VPhysicalVolume* HLXDetectorConstruction::Construct()
     //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
     // Construct the world
     // World volume 
-    // Define the word as a 1m X 1m x 2m cube
-    // Will be more convient to work in cm so 100 cm X 100 cm X 200 cm
-    G4double worldSizeXY = 100 * cm;
+    // Define the word as a 4m X 4m x 2m cube
+    // Will be more convient to work in cm so 400 cm X 400 cm X 200 cm
+    G4double worldSizeXY = 400 * cm;
     G4double worldZizeZ  = 200 * cm;
 
     G4Box* solidWorld =    
@@ -161,7 +161,7 @@ G4VPhysicalVolume* HLXDetectorConstruction::Construct()
 
     // Define as a square of width 60 cm and thickness 1nm (no need to be thick)
     // Detector is placed 20 cm away from the radiator exit surface
-    G4double detectorSizeXY = 60 * cm;
+    G4double detectorSizeXY = 400 * cm;
     G4double detectorSizeZ  = 1 * cm;
     G4double detectorLocZ = 27.70926 * cm;   // Typical of values observed at NRC
     G4ThreeVector positionDetector = G4ThreeVector(0, 0, detectorLocZ + radiatorLocz + 0.5*radiatorSizeZ );

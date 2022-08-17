@@ -36,6 +36,9 @@ class HLXPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     G4String fBeamType;
     G4double fsigmaBeamX;
     G4double fsigmaBeamY;
+    G4double fBeamXLoc;
+    G4double fBeamYLoc;
+    
 
   private:
     G4ParticleGun*  fParticleGun; // pointer a to G4 gun class

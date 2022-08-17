@@ -26,7 +26,9 @@ HLXPrimaryGeneratorAction::HLXPrimaryGeneratorAction()
   // fThetaDiv(1.00 * CLHEP::pi / 180.),  // default to 0.25 degrees
   fMomentum(35 *MeV), // Particle momentum default to 35 MeV
   fSigmaMomentum(0*MeV), // Particle momentum width
-  fSigmaAngle( 2.0 * deg)  // Divergence
+  fSigmaAngle( 2.0 * deg),  // Divergence
+  fBeamXLoc(0 * mm), // X/Y location of the beam
+  fBeamYLoc(0 * mm)
 {
 
   CLHEP::HepRandom::setTheSeed((unsigned)clock());
@@ -131,12 +133,12 @@ void HLXPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   else{
 
     // Default to pencil beam
-    x0 = 0;
-    y0 = 0;
+    x0 = 0 * mm;
+    y0 = 0 * mm;
 
   }
-
-  fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
+  // Offset the particle origin by the beam location
+  fParticleGun->SetParticlePosition(G4ThreeVector(x0 + fBeamXLoc, y0 + fBeamYLoc,z0));
 
   fParticleGun->GeneratePrimaryVertex(anEvent);
 
@@ -180,6 +182,25 @@ void HLXPrimaryGeneratorAction::DefineCommands()
   sigmaAngleCmd.SetParameterName("t", true);
   sigmaAngleCmd.SetRange("t>=0.");
   sigmaAngleCmd.SetDefaultValue("0");
+
+
+
+  // X-loc bem command
+  auto& beamXCmd
+    = fMessenger->DeclarePropertyWithUnit("beamX",
+        "mm", fBeamXLoc, "X location of the beam");
+  beamXCmd.SetParameterName("xloc", true);
+  // beamXCmd.SetRange("xloc>=0.");
+  beamXCmd.SetDefaultValue("0.");
+
+
+  // Y-loc bem command
+  auto& beamYCmd
+    = fMessenger->DeclarePropertyWithUnit("beamY",
+        "mm", fBeamYLoc, "Y location of the beam");
+  beamYCmd.SetParameterName("Yloc", true);
+  // beamYCmd.SetRange("Yloc>=0.");
+  beamYCmd.SetDefaultValue("0.");
 
 }
 
