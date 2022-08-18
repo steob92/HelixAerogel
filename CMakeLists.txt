@@ -29,7 +29,7 @@ add_definitions(-DALL_PHYSICS)
 add_definitions(-DDIVERGENCE)       # Beam divergence
 add_definitions(-DGAUSSIAN)         # Gaussian beam profile 
 #add_definitions(-DVARENERGY)        # Variable beam energy
-#add_definitions(-DDEVMODE)         # Dev mode for new features 
+add_definitions(-DDEVMODE)         # Dev mode for new features 
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
@@ -68,6 +68,7 @@ set(HLX_MACROS
   vis.mac
   nrc_batch.mac
   nrc_batch_div.mac
+  processSims.py
   )
 
 set(HLX_SCRIPTS

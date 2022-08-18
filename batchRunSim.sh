@@ -5,9 +5,9 @@ source sourceGeant4.sh
 ENERGIES=(35 30 25 20 15 10)
 # ENERGIES=(35)
 # Number of particles to run
-NPART=1000
-# NPROC=$(expr `nproc` - 2) 2
-NPROC=1
+NPART=10000
+NPROC=$(expr `nproc` - 2)
+# NPROC=1
 
 
 # Create and run a tempory macro for each energy

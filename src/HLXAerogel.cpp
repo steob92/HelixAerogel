@@ -82,8 +82,12 @@ void HLXAerogel::MakeAerogel( G4LogicalVolume *logicWorld, G4double radiatorLocz
     G4int nRadiatorXY = radiatorSizeXY / blockSizeXY;
     G4int nRadiatorZ = radiatorSizeZ / blockSizeZ;
 
+<<<<<<< HEAD
     // G4Box *solidRadiator = new G4Box("Radiator", blockSizeXY/2.0, blockSizeXY/2.0, blockSizeZ/2.0);
     // G4Box *solidRadiator = new G4Box("Radiator", radiatorSizeXY/2.0, radiatorSizeXY/2.0, radiatorSizeZ/2.0);
+=======
+
+>>>>>>> f1574b2 (Correcting generic aerogel implementation and adding fits converter)
 
     float thickness = 0;
     float surface = 0;
@@ -93,6 +97,7 @@ void HLXAerogel::MakeAerogel( G4LogicalVolume *logicWorld, G4double radiatorLocz
     {
         for (int j = 0; j < nRadiatorXY; j++)
         {
+<<<<<<< HEAD
 
             // Place a block at of thickness defined at x,y
             // At a centre of the tile
@@ -124,6 +129,41 @@ void HLXAerogel::MakeAerogel( G4LogicalVolume *logicWorld, G4double radiatorLocz
             //     if ((dist < thickness) && (dist >= 0))
             //     {
 
+=======
+
+
+            surface = GetSurface((i)*blockSizeXYf, (j)*blockSizeXYf);
+            thickness = GetThickness((i)*blockSizeXYf, (j)*blockSizeXYf);
+
+            G4Box *solidRadiator = new G4Box("Radiator", blockSizeXY/2.0, blockSizeXY/2.0, thickness/2.0);
+            // G4Box *solidRadiator = new G4Box("Radiator", radiatorSizeXY/2.0, radiatorSizeXY/2.0, radiatorSizeZ/2.0);
+            G4LogicalVolume* logicRadiator = new G4LogicalVolume(solidRadiator, fMaterials->GetMaterial("aerogel"), "LogicRadiator");
+
+            G4PVPlacement* physRadiator = new G4PVPlacement(0,                  //no rotation
+                        G4ThreeVector(
+                            -5*cm + (i)*blockSizeXY, 
+                            -5*cm + (j)*blockSizeXY, 
+                            radiatorLocz + surface - 0.5 * thickness
+                            ),                       //at position
+                        logicRadiator,                                          //its logical volume
+                        "logicRadiator",                                        //its name
+                        logicWorld,                                             //its mother  volume
+                        false,                                                  //no boolean operation
+                        100*j + 10000 * i,                                                      //copy number
+                        checkOverlaps);     
+
+            // for (int k = 0; k < nRadiatorZ; k++)
+            // {
+
+
+            //     surface = GetSurface((i)*blockSizeXYf, (j)*blockSizeXYf);
+            //     thickness = GetThickness((i)*blockSizeXYf, (j)*blockSizeXYf);
+
+            //     dist = surface - (k)*blockSizeZf;
+            //     if ((dist < thickness) && (dist >= 0))
+            //     {
+
+>>>>>>> f1574b2 (Correcting generic aerogel implementation and adding fits converter)
             //         // create physical radiator
             //         G4PVPlacement* physRadiator = new G4PVPlacement(0,                  //no rotation
             //                     G4ThreeVector(-5*cm + (i)*blockSizeXY, -5*cm + (j)*blockSizeXY, radiatorLocz -0.6*cm + (k)*blockSizeZ),                       //at position
