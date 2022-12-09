@@ -102,6 +102,8 @@ void HLXPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 
   auto phi = (G4UniformRand()-0.5)*fSigmaAngle; // Beam opening angle (divergence)
+  // convert to rad
+  phi *= CLHEP::pi / 180;
   auto theta = 2*CLHEP::pi * G4UniformRand() ; // 0-360 degrees azimutal angle
 
   // // Spherical to Cartesian coordinates
