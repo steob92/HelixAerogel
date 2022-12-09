@@ -1,19 +1,22 @@
 #!/bin/bash
 #When working with obriens/root-geant4:v0.1
-source sourceGeant4.sh
+# source sourceGeant4.sh
 # Energies to use
 ENERGIES=(35 30 25 20 15 10)
 # ENERGIES=(35)
 # Number of particles to run
-NPART=10000
+NPART=100000
 NPROC=$(expr `nproc` - 2)
 # NPROC=1
+# DIV=7.5
+DIV=0
 
 
 # Create and run a tempory macro for each energy
 for ENG in ${ENERGIES[@]}; do
     sed -e "s|ENG|$ENG|" \
         -e "s|NPART|$NPART|" \
+        -e "s|ADIV|$DIV|" \
         -e "s|NTREAD|$NPROC|"  macros/nrc_batch.mac > nrc_batch_tmp.mac
 
     ./bin/HLX nrc_batch_tmp.mac 2>&1 | tee ${ENG}MeV.log
@@ -37,7 +40,7 @@ for ENG in ${ENERGIES[@]}; do
     # hadd ${ENG}MeV_NoBremNoRaylNoCompt.root `ls output3_t*.root`
     # hadd ${ENG}MeV_NoBremNoRaylNoComptNoCoul.root `ls output4_t*.root`
     # hadd ${ENG}MeV_NoBremNoRaylNoComptNoCoulNoMSC.root `ls output5_t*.root`
-    # hadd ${ENG}MeV_NoBremNoRaylNoComptNoCoulNoMSCNoIoni.root `ls output6_t*.root`
+    hadd ${ENG}MeV_NoBremNoRaylNoComptNoCoulNoMSCNoIoni.root `ls output1_t*.root`
 
 
     rm output*.root

@@ -226,7 +226,7 @@ int main(int argc, char *argv[])
     for (i = 0; i < argc-1 ; i++)
     {
         filename[i] = argv[i+1];
-        filename[i].append("MeV.root");
+        // filename[i].append("MeV.root")
         energy[i] = atof(argv[i+1]);
         TFile f(filename[i].c_str());
         processRun((TTree*) f.Get("Photon"), mean[i], std[i], mean_err[i], std_err[i], par[i], par_err[i]);

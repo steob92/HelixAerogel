@@ -19,30 +19,32 @@
 # Run 0
 # run the beam
 #/gun/energy ENG MeV
+/HLX/generator/beamX 0
+/HLX/generator/sigmaAngle ADIV deg
 /HLX/generator/momentum ENG MeV
 /run/beamOn NPART
 
 # Run 1
-#/process/inactivate eBrem e-
+/process/inactivate eBrem e-
 #/run/beamOn NPART
 
 # Run 2
-#/process/inactivate Rayl e-
+/process/inactivate Rayl e-
 #/run/beamOn NPART
 
 # Run 3
-#/process/inactivate compt e-
+/process/inactivate compt e-
 #/run/beamOn NPART
 
 # Run 4
-#/process/inactivate CoulombScat e-
+/process/inactivate CoulombScat e-
 #/run/beamOn NPART
 
 
 # Run 5
-#/process/inactivate msc e-
+/process/inactivate msc e-
 #/run/beamOn NPART
 
 # Run 6
-#/process/inactivate eIoni e-
-#/run/beamOn NPART
+/process/inactivate eIoni e-
+/run/beamOn NPART

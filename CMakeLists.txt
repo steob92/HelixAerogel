@@ -24,10 +24,10 @@ include_directories(${ROOT_INCLUDE_DIR})
 # Define what physics to use
 add_definitions(-DALL_PHYSICS)
 # Define putting glass plane infront of CCD
-# add_definitions(-DREAL_CCD)
+add_definitions(-DREAL_CCD)
 # Some definitions for quick turing on/off of components
-add_definitions(-DDIVERGENCE)       # Beam divergence
-add_definitions(-DGAUSSIAN)         # Gaussian beam profile 
+#add_definitions(-DDIVERGENCE)       # Beam divergence
+#add_definitions(-DGAUSSIAN)         # Gaussian beam profile 
 #add_definitions(-DVARENERGY)        # Variable beam energy
 add_definitions(-DDEVMODE)         # Dev mode for new features 
 
@@ -55,6 +55,9 @@ target_link_libraries(HLX ${Geant4_LIBRARIES} ROOT::Core)
 
 add_executable(analyzeRuns ${PROJECT_SOURCE_DIR}/src/analyzeRuns.cc )
 target_link_libraries(analyzeRuns ${ROOT_LIBRARIES} ROOT::Core)
+
+add_executable(analyzeRuns_Shift ${PROJECT_SOURCE_DIR}/src/analyzeRuns_Shift.cc )
+target_link_libraries(analyzeRuns_Shift ${ROOT_LIBRARIES} ROOT::Core)
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
