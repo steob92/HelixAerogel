@@ -26,24 +26,24 @@
 
 # Run 1
 /process/inactivate eBrem e-
-#/run/beamOn NPART
+/run/beamOn NPART
 
-# Run 2
-/process/inactivate Rayl e-
-#/run/beamOn NPART
+# Run 2 Note this now seems to be OpRayleigh not Rayl
+/process/inactivate OpRayleigh e-
+/run/beamOn NPART
 
-# Run 3
-/process/inactivate compt e-
-#/run/beamOn NPART
+# Run 3 Not working....
+#/process/inactivate compt e-
+/run/beamOn NPART
 
 # Run 4
 /process/inactivate CoulombScat e-
-#/run/beamOn NPART
+/run/beamOn NPART
 
 
 # Run 5
 /process/inactivate msc e-
-#/run/beamOn NPART
+/run/beamOn NPART
 
 # Run 6
 /process/inactivate eIoni e-

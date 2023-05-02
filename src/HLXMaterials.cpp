@@ -117,21 +117,40 @@ void HLXMaterials::DefineMaterials()
 
     double aerogelFixedIndex = 1.15;                                                                                                                                                     
     G4double *aeroN = new G4double[fNPoints];
+    G4double *aeroAbsEnergyRange = new G4double[fNPoints];
+    G4double *aeroAbsLength = new G4double[fNPoints];
+
+
+    double a = 0.982;
+    double c = 0.007;
+    double t = 0;
+
+
+    // Sellmeier formula
+    double a0 = 0.3175;
+    double lam0 = 50.5;
+    double lam = 0;
+
+    // double delEnergy =(fEnergyRange[1] - fEnergyRange[0]) / 100;
+    G4cout << "Refractive Index:" << G4endl;
     for (int i = 0; i < fNPoints; i++)
     {
-        aeroN[i] = aerogelFixedIndex;
+        // aeroN[i] = 1.1500620074151149;
+        lam = 1239.84193 *eV /fEnergyRange[i];
+        aeroN[i] = sqrt(1. + (a0 * pow(lam,2)) / (pow(lam,2) - pow(lam0,2)));
+        // Higher order...
+        // aeroN[i] += (a1 * lam^2) / (lam^2 - lam1^2);
+        
+        // Get the absorption length
+        // aeroAbsEnergyRange[i] = fEnergyRange[i];
+        // t = a * std::exp( -c * 10 / std::pow(1239.84193*eV / aeroAbsEnergyRange[i] * 1e-3, 4));
+        // aeroAbsLength[i] = -1/(std::log(t));
+        // aeroAbsLength[i] = 0;
+        
+
+        // G4cout << i << " " << fEnergyRange[i]  << " " << lam << " " << aeroN[i] << " " << aeroAbsLength[i] << G4endl;
+
     }    
-    // double aeroAbsEnergyRange[100];
-    // double aeroAbsLength[100];
-    // double delEnergy =(fEnergyRange[1] - fEnergyRange[0]) / 100;
-    // double a = 0.982;
-    // double c = 0.007;
-    // for (int i = 0; i < 100; i++)
-    // {
-    //     aeroAbsEnergyRange[i] = fEnergyRange[0] + i * delEnergy;
-    //     double t = a * std::exp( -c / std::pow(1239.84193*eV / aeroAbsEnergyRange[i], 4));
-    //     aeroAbsLength[i] = -1/(std::log(t));
-    // } 
 
     // add elemental composition of aerogel                                                                                                                                                                          
     aerogelMaterial->AddElement(el_Si, 1);
